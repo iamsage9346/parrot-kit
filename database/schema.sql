@@ -6,12 +6,19 @@
 CREATE TABLE IF NOT EXISTS preorders (
   id SERIAL PRIMARY KEY,
   email VARCHAR(255) NOT NULL,
+  first_name VARCHAR(100),
+  last_name VARCHAR(100),
   amount DECIMAL(10, 2) NOT NULL DEFAULT 9.99,
   currency VARCHAR(3) NOT NULL DEFAULT 'USD',
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   
-  -- Additional fields for future use
+  -- PayPal transaction details
   paypal_transaction_id VARCHAR(255),
+  paypal_order_id VARCHAR(255),
+  payment_status VARCHAR(50) DEFAULT 'pending',
+  payer_id VARCHAR(255),
+  
+  -- Access management
   access_granted BOOLEAN DEFAULT FALSE,
   access_granted_at TIMESTAMP WITH TIME ZONE,
   notes TEXT,
@@ -28,9 +35,14 @@ CREATE INDEX idx_preorders_access_granted ON preorders(access_granted) WHERE acc
 -- Comments
 COMMENT ON TABLE preorders IS 'Early access preorders with email tracking';
 COMMENT ON COLUMN preorders.email IS 'User email for access delivery';
+COMMENT ON COLUMN preorders.first_name IS 'Customer first name from PayPal';
+COMMENT ON COLUMN preorders.last_name IS 'Customer last name from PayPal';
 COMMENT ON COLUMN preorders.amount IS 'Payment amount (default $9.99)';
 COMMENT ON COLUMN preorders.currency IS 'Payment currency (default USD)';
-COMMENT ON COLUMN preorders.paypal_transaction_id IS 'PayPal transaction ID for verification';
+COMMENT ON COLUMN preorders.paypal_transaction_id IS 'PayPal transaction ID (tx parameter)';
+COMMENT ON COLUMN preorders.paypal_order_id IS 'PayPal order ID for reference';
+COMMENT ON COLUMN preorders.payment_status IS 'Payment status: pending, completed, failed';
+COMMENT ON COLUMN preorders.payer_id IS 'PayPal payer ID';
 COMMENT ON COLUMN preorders.access_granted IS 'Whether early access has been granted';
 COMMENT ON COLUMN preorders.access_granted_at IS 'When access was granted';
 

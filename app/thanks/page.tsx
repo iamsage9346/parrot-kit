@@ -2,27 +2,64 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 export default function ThanksPage() {
   const [email, setEmail] = useState<string | null>(null)
+  const [customerName, setCustomerName] = useState<string>('')
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     // Get email from localStorage
     const savedEmail = localStorage.getItem('preorder_email')
     setEmail(savedEmail)
 
-    // Save to backend (placeholder - 실제 API로 교체 필요)
-    if (savedEmail) {
+    // Get PayPal data from URL parameters
+    const txId = searchParams.get('tx') // Transaction ID
+    const orderId = searchParams.get('order_id') // Order ID
+    const payerId = searchParams.get('payer_id') // Payer ID
+    const firstName = searchParams.get('first_name') // First name
+    const lastName = searchParams.get('last_name') // Last name
+    const payerEmail = searchParams.get('payer_email') // PayPal email
+    const amount = searchParams.get('amt') || searchParams.get('amount') // Amount
+    const currency = searchParams.get('cc') || searchParams.get('currency') // Currency
+    const status = searchParams.get('st') || searchParams.get('status') // Payment status
+
+    // Set customer name for display
+    if (firstName || lastName) {
+      setCustomerName(`${firstName || ''} ${lastName || ''}`.trim())
+    }
+
+    // Use PayPal email if no email in localStorage
+    const finalEmail = savedEmail || payerEmail
+
+    if (finalEmail) {
+      setEmail(finalEmail)
+    }
+
+    // Save to backend with complete PayPal data
+    if (finalEmail) {
       fetch('/api/save-preorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: savedEmail,
+          email: finalEmail,
+          firstName: firstName || null,
+          lastName: lastName || null,
           timestamp: new Date().toISOString(),
-          amount: 9.99,
-          currency: 'USD'
+          amount: amount ? parseFloat(amount) : 9.99,
+          currency: currency || 'USD',
+          paypalTransactionId: txId || null,
+          paypalOrderId: orderId || null,
+          paymentStatus: status === 'Completed' ? 'completed' : 'pending',
+          payerId: payerId || null
         })
-      }).catch(err => console.error('Failed to save preorder:', err))
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log('✅ Preorder saved:', data)
+        })
+        .catch(err => console.error('❌ Failed to save preorder:', err))
     }
 
     // Track page view
@@ -37,11 +74,12 @@ export default function ThanksPage() {
       ;(window as any).gtag('event', 'purchase', {
         event_category: 'payment_conversion',
         event_label: 'Early Access Purchase Complete',
-        value: 9.99,
-        currency: 'USD'
+        value: amount ? parseFloat(amount) : 9.99,
+        currency: currency || 'USD',
+        transaction_id: txId || 'unknown'
       })
     }
-  }, [])
+  }, [searchParams])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center px-4">
@@ -55,7 +93,7 @@ export default function ThanksPage() {
 
         {/* Heading */}
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Payment Received! 🎉
+          Payment Received{customerName && `, ${customerName.split(' ')[0]}`}! 🎉
         </h1>
         
         <p className="text-xl text-gray-600 mb-8">
@@ -67,6 +105,11 @@ export default function ThanksPage() {
             <p className="text-sm text-blue-800">
               📧 Confirmation sent to: <strong>{email}</strong>
             </p>
+            {customerName && (
+              <p className="text-sm text-blue-700 mt-1">
+                👤 Name: <strong>{customerName}</strong>
+              </p>
+            )}
           </div>
         )}
 
