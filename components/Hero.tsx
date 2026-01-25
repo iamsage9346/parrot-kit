@@ -157,7 +157,7 @@ export default function Hero() {
                   <button
                     onClick={handleAnalyze}
                     disabled={isAnalyzing || !link.trim()}
-                    className="bg-purple-600 text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-purple-700 active:scale-95 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shadow-lg shadow-purple-500/30"
+                    className="bg-white text-purple-600 border-2 border-purple-600 px-6 sm:px-8 py-3 rounded-lg hover:bg-purple-50 active:scale-95 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                   >
                     {isAnalyzing ? (
                       <span className="flex items-center gap-2">
@@ -170,6 +170,23 @@ export default function Hero() {
                     ) : 'Analyze (Free)'}
                   </button>
                 </div>
+                
+                {/* Primary CTA - Get Early Access */}
+                <a
+                  href="/preorder"
+                  className="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-4 rounded-lg hover:from-purple-700 hover:to-pink-700 active:scale-95 transition font-bold text-center shadow-lg shadow-purple-500/30"
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && (window as any).gtag) {
+                      (window as any).gtag('event', 'payment_cta_click', {
+                        event_category: 'payment_conversion',
+                        event_label: 'Hero Get Early Access'
+                      })
+                    }
+                  }}
+                >
+                  🔥 90% SALE 🔥 Get Early Access ($9.99)
+                </a>
+                
                 {error && (
                   <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 px-3 py-2 rounded">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

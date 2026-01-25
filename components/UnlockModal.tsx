@@ -31,9 +31,9 @@ export default function UnlockModal({ isOpen, onClose }: UnlockModalProps) {
 
     // GA4 Event
     if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'waitlist_submit', {
-        event_category: 'conversion',
-        event_label: 'Unlock Modal Waitlist'
+      (window as any).gtag('event', 'recipe_modal_submit', {
+        event_category: 'recipe_conversion',
+        event_label: 'Unlock Modal Recipe Request'
       })
     }
 
@@ -59,9 +59,9 @@ export default function UnlockModal({ isOpen, onClose }: UnlockModalProps) {
 
         // GA4 Success Event
         if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('event', 'signup_success', {
-            event_category: 'conversion',
-            event_label: 'Waitlist Signup Success'
+          (window as any).gtag('event', 'recipe_modal_success', {
+            event_category: 'recipe_conversion',
+            event_label: 'Recipe Email Sent'
           })
         }
       }

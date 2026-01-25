@@ -6,6 +6,21 @@ import { analytics } from '@/lib/analytics'
 export default function Pricing() {
   const plans = [
     {
+      name: 'Early Access',
+      price: '$9.99',
+      period: ' (3 months)',
+      description: 'Get started with ParrotKit at a special early access price.',
+      features: [
+        'Unlimited recipe breakdowns',
+        'Save & reuse templates',
+        'Export shot list + caption flow + edit cues',
+        'Priority in invite batches'
+      ],
+      highlighted: true,
+      ctaText: '🔥 90% SALE 🔥 Get Early Access ($9.99)',
+      ctaLink: '/preorder' as string | undefined
+    },
+    {
       name: 'Pro',
       price: `$${landingConfig.proMonthlyPrice}`,
       period: '/month',
@@ -31,7 +46,7 @@ export default function Pricing() {
         'Collaboration (notes + version history)',
         'Team priority support'
       ],
-      highlighted: true,
+      highlighted: false,
       earlyBirdNote: `Lock in $${landingConfig.earlyBirdTeamPrice}/mo if you join by ${landingConfig.earlyBirdDeadline} (later $${landingConfig.laterTeamPrice}/mo)`
     },
     {
@@ -59,12 +74,18 @@ export default function Pricing() {
     
     // Also track with GA4
     if (typeof window !== 'undefined' && (window as any).gtag) {
-      ;(window as any).gtag('event', 'pricing_click', {
-        event_category: 'conversion',
+      ;(window as any).gtag('event', 'payment_pricing_click', {
+        event_category: 'payment_conversion',
         event_label: `Pricing: ${plan.name}`,
         plan_name: plan.name,
         plan_price: plan.price
       })
+    }
+
+    // Handle Early Access plan
+    if (plan.ctaLink) {
+      window.location.href = plan.ctaLink
+      return
     }
 
     if (plan.isLimited) {
@@ -90,7 +111,7 @@ Please let me know the next steps!`)
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
           {plans.map((plan, index) => (
             <div 
               key={index} 

@@ -60,9 +60,9 @@ export default function FinalCTA() {
     
     // Also track with GA4
     if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'generate_lead', {
-        event_category: 'conversion',
-        event_label: 'Waitlist Signup',
+      (window as any).gtag('event', 'recipe_lead', {
+        event_category: 'recipe_conversion',
+        event_label: 'Waitlist Form Submit',
         user_role: formData.role
       })
     }
@@ -78,8 +78,8 @@ export default function FinalCTA() {
     if (res.ok) {
       // GA4 Success Event
       if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'signup_success', {
-          event_category: 'conversion',
+        (window as any).gtag('event', 'recipe_signup_success', {
+          event_category: 'recipe_conversion',
           event_label: 'Waitlist Signup Success'
         })
       }
@@ -104,7 +104,7 @@ export default function FinalCTA() {
             Your next Short starts with one link.
           </h2>
           <p className="text-xl text-white/90">
-            Join the waitlist to get early access and a sample recipe. We&apos;re onboarding in batches, secure your spot now.
+            Join the waitlist to get your free recipe instantly. We&apos;re onboarding in batches, secure your spot now.
           </p>
         </div>
 
@@ -159,7 +159,7 @@ export default function FinalCTA() {
               type="submit"
               className="w-full bg-white text-purple-600 px-8 py-5 rounded-xl hover:bg-gray-50 active:scale-98 transition-all font-bold text-lg shadow-xl hover:shadow-2xl"
             >
-              Get early access
+              Get your Recipe
             </button>
 
             <p className="text-sm text-white/70 pt-2">

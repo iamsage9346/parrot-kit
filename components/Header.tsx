@@ -43,16 +43,16 @@ export default function Header() {
           <button 
             onClick={() => {
               if (typeof window !== 'undefined' && (window as any).gtag) {
-                ;(window as any).gtag('event', 'cta_click', {
-                  event_category: 'conversion',
+                ;(window as any).gtag('event', 'payment_cta_click', {
+                  event_category: 'payment_conversion',
                   event_label: 'Header Get Early Access'
                 })
               }
-              scrollToSection('cta')
+              window.location.href = '/preorder'
             }}
             className="bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700 transition font-medium"
           >
-            Get early access
+            🔥 90% SALE → $9.99
           </button>
         </div>
       </nav>
